@@ -60,10 +60,10 @@
 %	ESSAY BODY
 %----------------------------------------------------------------------------------------
 \newpage
-\section*{Definit tipo de filtro}
+\section*{Definir tipo de filtro}
 
 \begin{equation}
-H(s) = \frac{6,317*10^8*s^2}{s^4 + 3,554*10^4*s^3 + 1,895*10^9*s^2 + 2,245*10^{13}*s + 3,99*10^{17}} 
+H(s) = \frac{6,317 \cdot 10^8 \cdot s^2}{s^4 + 3,554 \cdot 10^4 \cdot s^3 + 1,895 \cdot 10^9 \cdot s^2 + 2,245 \cdot 10^{13} \cdot s + 3,99 \cdot 10^{17}} 
 \end{equation}
 
 En un primer analisis podemos indentificar que se trata de un filtro pasa-banda ya que tendiendo a infinito o menos infinito podemos 
@@ -81,6 +81,46 @@ Esta compuesto por 4 polos los cuales son dos pares complejos conjugados:
 Como los polos complejos conjugadores se consideran como un polo real doble y sabiendo como se conforma el diagrama asintotico sabemos que existen
 dos caidas en la transferencia (una por cada polo doble) con pendiente -40db y una subida de 40db gracias al cero doble. Esto se corresponde con el
 grafico de pasabanda que esperamos obtener.
+
+La transferencia puede expresarse como la multiplicacion de dos transferencia de orden dos como se muestra a continuacion:
+\begin{equation}
+H(s) = H_{0} \cdot \frac{ 2 \cdot \alpha_{1} \cdot s }{ s^2 + 2 \cdot \alpha_{1} \cdot s + w_{1}^2} \cdot \frac{ 2 \cdot \alpha_{2} \cdot s }{ s^2 + 2 \cdot \alpha_{2} \cdot s + w_{2}^2}
+\end{equation}
+\begin{itemize}
+\item Expresion pasa-bajos 2 orden:
+\begin{equation}
+H = \frac{ 2 \cdot \alpha \cdot s }{ s^2 + 2 \cdot \alpha \cdot s + w^2}
+\end{equation}
+\begin{equation}
+Q = \frac{w}{2 \cdot \alpha}
+\end{equation}
+\begin{equation}
+f = \frac{w}{2 \cdot \pi}
+\end{equation}\\
+\item El primer pasabajos de orden 2:
+\begin{equation}
+H_{1} = \frac{24004.64 \cdot s^2}{s^2 + 24004.6 \cdot s + 1314578211.7924} 
+\end{equation}
+$\alpha_{1}$ = 12002.32\\
+$w_{1}$ = 36257.11\\
+$f_{1}$ = 5770.5\\
+$Q_{1}$ = 1.51\\
+\item El segundo pasabajos de orden 2:
+\begin{equation}
+H_{2} = \frac{11535.36 \cdot s^2}{s^2 +11535.36 \cdot s + 303519347.3668} 
+\end{equation}
+$\alpha_{2}$ = 5767.68\\
+$w_{2}$ = 17421.81\\
+$f_{2}$ = 2772.77\\
+$Q_{2}$ = 1.51\\
+\item Comparando las transferencias
+\begin{equation}
+6,317 \cdot 10^8 = H_{0} \cdot 2\alpha_{1} \cdot 2\alpha_{2}
+\end{equation}
+\begin{equation}
+H_{0} = 2.28
+\end{equation}
+\end{itemize}
 
 \newpage
 \section*{Simulacion}
