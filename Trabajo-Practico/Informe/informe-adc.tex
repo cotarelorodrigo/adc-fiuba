@@ -29,7 +29,7 @@
 \usepackage{xcolor}
 \lstset { %
     language=C++,
-    backgroundcolor=\color{black!5}, % set backgroundcolor
+    backgroundcolor=\color{black!5}, % set backgroundcolor%
     basicstyle=\footnotesize,% basic font setting
     breaklines=true,
 }
@@ -125,7 +125,7 @@ H_{0} = 2.28
 \newpage
 \section*{Simulacion}
 \begin{itemize}
-\item Diagrama de Bode de modulo y fase
+\item Diagrama de Bode de modulo y fase \\
 Podemos confirmar lo explicado anteriormente. El gráfico muestra claramente la subida de 40 db por década que después se compensa con el primer polo doble generando una meseta y en el segundo polo doble se produce la caída de -40 db por década.\\
 \begin{figure}[h]
 	\centering
@@ -146,6 +146,185 @@ Podemos confirmar lo explicado anteriormente. El gráfico muestra claramente la 
 	\includegraphics[width=\textwidth]{Respuesta_al_impulso.png}
 \caption{Respuesta al impulso.}
 \end{figure}
+\item Respuesta a la senoidal \\
+\\
+Al tener un filtro pasabanda vamos a utilizar una frecuencia f0 = 4200Hz que esta dentro de nuestro ancho de banda y esperamos que el filtro atenue las senionadales con frecuencia de 1 decada mayor y menor.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{Respuesta_senoidal.png}
+\caption{Respuesta a señal senoidal.}
+\end{figure}
+\newpage
+\item Respuesta a la cuadrada
+\begin{itemize}
+\item f0 = 4200 \\
+	\begin{figure}[h]
+		\centering
+			\includegraphics[width=\textwidth]{cuadrada_f0.png}
+	\caption{Respuesta cuadrada.}
+	\end{figure}
+
+\item f0/10
+	\begin{figure}[h]
+		\centering
+			\includegraphics[width=\textwidth]{cuadrada_f0_div_10.png}
+	\caption{Respuesta cuadrada.}
+	\end{figure}
+\newpage
+\item 10 $\cdot$ f0 \\
+	\begin{figure}[h]
+		\centering
+			\includegraphics[width=\textwidth]{cuadrada_f0_por_10.png}
+	\caption{Respuesta cuadrada.}
+	\end{figure}
+\end{itemize}
+\end{itemize}
+
+\newpage
+\section*{Eleccion de circuito}
+Para implementar este filtro se uso un pasabanda "Infinite Gain Multiple Feedback" ya que permite trabajar con cualquier factor de calidad Q.
+\begin{figure}[h]
+\centering
+	\includegraphics[width=\textwidth]{filtro.png}
+\caption{Infinite Gain Multiple Feedback}
+\end{figure}
+
+\newpage
+\section*{Valores normalizados}
+En base a las ecuaciones del circuito presentadas arriba se calcularon los valores necesarios de los componentes junto a sus valores
+normalizados respectivamente.\\
+\break
+\begin{tabular}{ |p{2cm}||p{2cm}|p{6cm}|  }
+ \hline
+ \multicolumn{3}{|c|}{Filtro pasabajos 1} \\
+ \hline
+ Componente&Valor&Valor Normalizado\\
+ \hline
+ C  & 12nF & 12nF\\
+ R2  & 6.94k & 6.8k\\
+ R1  & 2.30k & 2.2k\\
+ R3  & 1.13k & 1.2k\\
+ \hline
+\end{tabular}\\
+\break
+\break
+\begin{tabular}{ |p{2cm}||p{2cm}|p{6cm}|  }
+ \hline
+ \multicolumn{3}{|c|}{Filtro pasabajos 2} \\
+ \hline
+ Componente&Valor&Valor Normalizado\\
+ \hline
+ C  & 10nF & 10nF\\
+ R2  & 17.34k & 18k\\
+ R1  & 5.74k & 5.6k\\
+ R3  & 2.84k & 2.7k\\
+ \hline
+\end{tabular}
+
+\newpage
+\section*{Diagramas normalizados}
+\begin{figure}[h]
+\centering
+	\includegraphics[width=\textwidth]{bode_norm.png}
+\caption{Diagrama de bode (modulo y fase) normalizado}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+	\includegraphics[width=\textwidth]{escalon_norm.png}
+\caption{Respuesta al escalon normalizado}
+\end{figure}
+
+\newpage
+\section*{Simulacion LTspice}
+\begin{itemize}
+\item Diagrama de Bode de modulo y fase
+\begin{figure}[h]
+\centering
+	\includegraphics[width=\textwidth]{bode_TL081.png}
+\caption{Diagrama de Bode ltspice}
+\end{figure}
+
+\newpage
+\item Respuesta al escalon
+\begin{figure}[h]
+\centering
+	\includegraphics[width=\textwidth]{escalon_TL081.png}
+\caption{Diagrama de Bode ltspice}
+\end{figure}
+
+\newpage
+\item Respuesta a la senoidal
+\begin{itemize}
+\item f0
+\begin{figure}[h]
+\centering
+	\includegraphics[width=\textwidth]{sen_fo_original.png}
+\caption{Senoidal f0 original}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+	\includegraphics[width=\textwidth]{sen_fo_TL081.png}
+\caption{Senoidal f0 TL081}
+\end{figure}
+
+\newpage
+\item f0/10
+\begin{figure}[h]
+\centering
+	\includegraphics[width=\textwidth]{sen_fo_sobre_10_original.png}
+\caption{Senoidal f0/10 original}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+	\includegraphics[width=\textwidth]{sen_fo_sobre_10_TL081.png}
+\caption{Senoidal f0/10 TL081}
+\end{figure}
+
+\newpage
+\item 10 $\cdot$ f0
+\begin{figure}[h]
+\centering
+	\includegraphics[width=\textwidth]{sen_fo_por_10_original.png}
+\caption{Senoidal 10 $\cdot$ f0 original}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+	\includegraphics[width=\textwidth]{sen_fo_por_10_TL081.png}
+\caption{Senoidal 10 $\cdot$ f0 TL081}
+\end{figure}
+\end{itemize}
+
+\newpage
+\item Respuesta a señal cuadrada
+\begin{itemize}
+\item f0
+\begin{figure}[h]
+\centering
+	\includegraphics[width=\textwidth]{cuadrada_f0_TL081.png}
+\caption{Cuadrada f0 TL081}
+\end{figure}
+
+\newpage
+\item f0/10
+\begin{figure}[h]
+\centering
+	\includegraphics[width=\textwidth]{cuadrada_f0_sobre_10_TL081.png}
+\caption{Cuadrada f0/10 TL081}
+\end{figure}
+
+\newpage
+\item 10 $\cdot$ f0
+\begin{figure}[h]
+\centering
+	\includegraphics[width=\textwidth]{cuadrada_f0_por_10_TL081.png}
+\caption{Cuadrada 10 $\cdot$ f0 TL081}
+\end{figure}
+
+\end{itemize}
 
 \end{itemize}
 
