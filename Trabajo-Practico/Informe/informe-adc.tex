@@ -27,6 +27,7 @@
 \usepackage{csquotes}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{amsmath}
 \lstset { %
     language=C++,
     backgroundcolor=\color{black!5}, % set backgroundcolor%
@@ -99,7 +100,7 @@ f = \frac{w}{2 \cdot \pi}
 \end{equation}\\
 \item El primer pasabajos de orden 2:
 \begin{equation}
-H_{1} = \frac{24004.64 \cdot s^2}{s^2 + 24004.6 \cdot s + 1314578211.7924} 
+H_{1} = \frac{24004.64 \cdot s}{s^2 + 24004.6 \cdot s + 1314578211.7924} 
 \end{equation}
 $\alpha_{1}$ = 12002.32\\
 $w_{1}$ = 36257.11\\
@@ -107,7 +108,7 @@ $f_{1}$ = 5770.5\\
 $Q_{1}$ = 1.51\\
 \item El segundo pasabajos de orden 2:
 \begin{equation}
-H_{2} = \frac{11535.36 \cdot s^2}{s^2 +11535.36 \cdot s + 303519347.3668} 
+H_{2} = \frac{11535.36 \cdot s}{s^2 +11535.36 \cdot s + 303519347.3668} 
 \end{equation}
 $\alpha_{2}$ = 5767.68\\
 $w_{2}$ = 17421.81\\
@@ -118,9 +119,11 @@ $Q_{2}$ = 1.51\\
 6,317 \cdot 10^8 = H_{0} \cdot 2\alpha_{1} \cdot 2\alpha_{2}
 \end{equation}
 \begin{equation}
-H_{0} = 2.28
+H_{0} = 2.28\\
 \end{equation}
 \end{itemize}
+El polo con la parte real mas chica (en este caso $\alpha_{2}$ = 5767) es el que estabiliza el sistema, por lo tanto $\tau$ = $\frac{1}{\alpha_{2}}$ = 1.73 $\cdot$ 10$^{-4}$ y nuestro ciruitos se estabilizaria a los 0.86ms (5 $\cdot$ $\tau$)\\
+
 
 \newpage
 \section*{Simulacion}
@@ -133,7 +136,8 @@ Podemos confirmar lo explicado anteriormente. El gráfico muestra claramente la 
 \caption{Diagrama de Bode de modulo y fase}
 \end{figure}\\
 \newpage
-\item Respuesta al escalon
+\item Respuesta al escalon\\
+En la respuesta al escalon primero tenemos un flanco ascendente y despues una continua. En el flanco ascendente al tener un pasabanda que filtra las frecuencia altas esperamos que no suba de golpe y una vez que termine el transitorio tiene que tender a cero ya que al filtrar las frecuencias bajas no estamos dejando pasar la componente continua.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\textwidth]{Respuesta_al_escalon.png}
@@ -157,14 +161,16 @@ Al tener un filtro pasabanda vamos a utilizar una frecuencia f0 = 4200Hz que est
 \newpage
 \item Respuesta a la cuadrada
 \begin{itemize}
-\item f0 = 4200 \\
+\item f0 = 4200 Hz \\
+Para este caso tenemos una cuadrada con periodo de $\frac{1}{f}$ = 2.38 $\cdot$ 10$^{-4}$s, menor a 5 $\cdot$ $\tau$, por lo que vamos a ver solo una parte del transitorio. En cada flanco ascendete el filtro va a responder subiendo suavemente ya que estamos filtrando las frecuencias altas que forman al flanco, despues viene la parte plana de la cuadrada (frecuencias bajas) que tambien es filtrada por lo que el grafico va a caer suavemente tambien.Finalmente el flanco decendente se encarga de repetir la misma parte inicial del transitorio pero invirtiendo el comportamiento. Como filtra las frecuencias bajas, se va a filtrar la componente continua de esta cuadrada que es 0.5 (valor medio) por lo que  la salida deberia tener una continua cero.
 	\begin{figure}[h]
 		\centering
 			\includegraphics[width=\textwidth]{cuadrada_f0.png}
 	\caption{Respuesta cuadrada.}
 	\end{figure}
-
-\item f0/10
+\newpage
+\item f0/10 \\
+Para la segunda cuadrada con periodo de $\frac{1}{420}$ = 2.38ms que es claramente mayor a los 0.86 que necesita nuestro filtro para estabilizarse. Por lo tanto como en cada periodo el circuito llega a estabilizarse, vamos a poder ver en cada flanco ascendete la forma de la respuesta al escalon completa mientras que en los flancos descendientes la misma forma invertida.
 	\begin{figure}[h]
 		\centering
 			\includegraphics[width=\textwidth]{cuadrada_f0_div_10.png}
@@ -172,17 +178,30 @@ Al tener un filtro pasabanda vamos a utilizar una frecuencia f0 = 4200Hz que est
 	\end{figure}
 \newpage
 \item 10 $\cdot$ f0 \\
+Esta cuadrada es la de menor periodo ($\frac{1}{42000}$ = 23.8us) por lo que veremos una menor parte del transitorio todavia.
 	\begin{figure}[h]
 		\centering
 			\includegraphics[width=\textwidth]{cuadrada_f0_por_10.png}
 	\caption{Respuesta cuadrada.}
 	\end{figure}
+	\begin{figure}[h]
+		\centering
+			\includegraphics[width=\textwidth]{cuadrada_f0_por_10_v2.png}
+	\caption{Respuesta cuadrada con mas periodos.}
+	\end{figure}
+
 \end{itemize}
 \end{itemize}
 
 \newpage
 \section*{Eleccion de circuito}
-Para implementar este filtro se uso un pasabanda "Infinite Gain Multiple Feedback" ya que permite trabajar con cualquier factor de calidad Q.
+Para implementar este filtro se usaron dos pasabandas "Infinite Gain Multiple Feedback" conectados en cascada por las siguientes razones: \\
+\begin{itemize}
+\item Permite trabajar con cualquier factor de calidad Q.\\
+\item Al implementar dos IGMF lograba alcanzar la ganancia deseada conectando solamente dos de ellos en cascada. En caso de utilizar un pasabajos y pasaltos corria el riesgo de tener que agregar un tercer ciruito en cascada (agregar mas componentes) para lograr la ganancia deseada.\\
+\item El diseño me permitia usar pocos componentes.\\
+\item Ya lo habiamos trabajado en clase.
+\end{itemize}
 \begin{figure}[h]
 \centering
 	\includegraphics[width=\textwidth]{filtro.png}
@@ -327,6 +346,140 @@ normalizados respectivamente.\\
 \end{itemize}
 
 \end{itemize}
+
+\newpage
+\section*{Calculo analitico}
+\begin{itemize}
+\item Respuesta al escalon\\
+
+\begin{itemize}
+	\item p$_{1}$ = -12002.32+34212.9j = -$\alpha_{1}$ + $\beta_{1}$ j\\
+	\item $\bar{p_{1}}$ = -12002.32-34212.9j = -$\alpha_{1}$ - $\beta_{1}$ j\\
+	\item p$_{2}$ = -5767.68+16439.38j = -$\alpha_{2}$ + $\beta_{2}$ j\\
+	\item $\bar{p_{2}}$ = -5767.68-16439.38j = -$\alpha_{2}$ - $\beta_{2}$ j\\
+\end{itemize}
+
+\begin{align*}
+V_{o}(s) &= H(s) \cdot V_{i}(s)\\[10pt]
+V_{i} &= 1 \\[10pt]
+V_{o}(s) &= \frac{6,317 \cdot 10^8 \cdot s^2}{(s - p_{1}) \cdot (s - \bar{p_{1}}) \cdot (s - p_{2}) \cdot (s - \bar{p_{2}})} \\[10pt]
+V_{o}(s) &= \frac{K_{1}}{(s - p_{1})} + \frac{\bar{K_{1}}}{(s - \bar{p_{1}})} +  \frac{K_{2}}{(s - p_{2})} + \frac{\bar{K_{2}}}{(s - \bar{p_{2}})} \\[10pt]
+K_{1} &= 2693 - 12334.70 j \\[10pt]
+\bar{K_{1}} &= 2693 + 12334.70 j \\[10pt]
+K_{2} &= -2693 + 5436.1 j \\[10pt]
+\bar{K_{2}} &= -2693 - 5436.1 j \\[10pt]
+\end{align*}
+
+Una vez obtenias las fracciones simples podemos antitransformar y sabemos la siguiente propiedad: \\
+\begin{tabular}{ |p{6cm}|p{6cm}|  }
+ \hline
+ \multicolumn{2}{|c|}{Anti Transformada de Laplace} \\
+ \hline
+ f(t)& F(s)\\
+ \hline
+ re$^{- \alpha t}$ $\cdot$ cos($\beta$t + $\theta$) $\cdot$ u(t)  & $\frac{0.5 r ^{j \theta}}{s + a -jb}$ + $\frac{0.5 r ^{-j \theta}}{s + a + jb}$ \\
+ \hline
+\end{tabular}\\
+
+Entonces la respuesta es:
+
+\begin{align*}
+V_{o}(t) = &2 \cdot |K_{1}| \cdot e^{- \alpha_{1} \cdot t} \cdot cos(\beta_{1} \cdot t + Arg(K_{1})) \\
+&+  2 \cdot |K_{2}| \cdot e^{- \alpha_{2} \cdot t} \cdot cos(\beta_{2} \cdot t + Arg(K_{2}))\\[10pt]
+\end{align*}
+
+\begin{align*}
+V_{o}(t) = &2 \cdot 12625.26 \cdot e^{-12002 \cdot t} \cdot cos(34212.9 \cdot t - 1.355) \\
+&+  2 \cdot 6066.60 \cdot e^{-5767 \cdot t} \cdot cos(16439.38 \cdot t + 2.030)\\[10pt]
+\end{align*}
+
+Aca vemo como el polo con la parte real mas chica (en este caso $\alpha_{2}$ = 5767) es el que estabiliza el sistema.
+
+\newpage
+\item Respuesta al impulso
+\begin{align*}
+V_{o}(s) &= H(s) \cdot V_{i}(s)\\[10pt]
+V_{i} &= 1/2 \\[10pt]
+V_{o}(s) &= \frac{6,317 \cdot 10^8 \cdot s}{(s - p_{1}) \cdot (s - \bar{p_{1}}) \cdot (s - p_{2}) \cdot (s - \bar{p_{2}})} \\[10pt]
+V_{o}(s) &= \frac{K_{1}}{(s - p_{1})} + \frac{\bar{K_{1}}}{(s - \bar{p_{1}})} +  \frac{K_{2}}{(s - p_{2})} + \frac{\bar{K_{2}}}{(s - \bar{p_{2}})} \\[10pt]
+K_{1} &= -0.3456 + 0.04253j \\[10pt]
+\bar{K_{1}} &= -0.3456 - 0.02353j \\[10pt]
+K_{2} &= 0.3456 + 0.02353j  \\[10pt]
+\bar{K_{2}} &= 0.3456 - 0.02353j  \\[10pt]
+\end{align*}
+
+Usando la misma propiedad que para el caso anterior:
+
+Entonces la respuesta es:
+
+\begin{align*}
+V_{o}(t) = &2 \cdot |K_{1}| \cdot e^{- \alpha_{1} \cdot t} \cdot cos(\beta_{1} \cdot t + Arg(K_{1})) \\
+&+  2 \cdot |K_{2}| \cdot e^{- \alpha_{2} \cdot t} \cdot cos(\beta_{2} \cdot t + Arg(K_{2}))\\
+\end{align*}
+Reemplazando los valores, nos da lo siguiente:
+\begin{align*}
+V_{o}(t) = &2 \cdot 0.348 \cdot e^{-12002 \cdot t} \cdot cos(34212.9 \cdot t + 3.019) \\
+&+  2 \cdot 0.348 \cdot e^{-5767 \cdot t} \cdot cos(16439.38 \cdot t + 0.122)\\[10pt]
+\end{align*}
+
+\newpage
+\item Respuesta a la senoidal de una frecuencia:
+
+
+\begin{align*}
+f &= 4200 \\[10pt]
+w &= 4200 \cdot 2 \cdot \pi \\[10pt]
+p_{w} &= w \cdot (0 + 1j) = 26389.378 j = \beta_{w} j\\[10pt]
+\bar{p_{w}} &= w \cdot (0 - 1j)  = -26389.378 j = - \beta_{w} j\\[10pt]
+V_{o}(s) &= H(s) \cdot V_{i}(s)\\[10pt]
+V_{i} &= \frac{w}{w^{2} + s^{2}} \\[10pt]
+V_{o}(s) &= \frac{6,317 \cdot 10^8 \cdot s^2}{(s - p_{1}) \cdot (s - \bar{p_{1}}) \cdot (s - p_{2}) \cdot (s - \bar{p_{2}}) \cdot (s - p_{w}) \cdot (s - \bar{p_{w}})} \\[10pt]
+V_{o}(s) &= \frac{K_{1}}{(s - p_{1})} + \frac{\bar{K_{1}}}{(s - \bar{p_{1}})} +  \frac{K_{2}}{(s - p_{2})} + \frac{\bar{K_{2}}}{(s - \bar{p_{2}})} +  \frac{K_{3}}{(s - p_{w})} +  \frac{\bar{K_{3}}}{(s - \bar{p_{w}})}\\[10pt]
+K_{1} &= 0.311 + 0.211 j \\[10pt]
+\bar{K_{1}} &= 0.311 - 0.211 j \\[10pt]
+K_{2} &= -0.242 + 0.212 j \\[10pt]
+\bar{K_{2}} &= -0.242 - 0.212 j \\[10pt]
+K_{3} &= -0.0689 + 0.495.1 j \\[10pt]
+\bar{K_{3}} &= -0.689 - 0.495 j \\[10pt]
+\end{align*}
+
+Entonces la respuesta es:
+
+\begin{align*}
+V_{o}(t) = &2 \cdot |K_{1}| \cdot e^{- \alpha_{1} \cdot t} \cdot cos(\beta_{1} \cdot t + Arg(K_{1})) \\
+&+  2 \cdot |K_{2}| \cdot e^{- \alpha_{2} \cdot t} \cdot cos(\beta_{2} \cdot t + Arg(K_{2}))\\
+&+  2 \cdot |K_{3}| \cdot e^{- \alpha_{w} \cdot t} \cdot cos(\beta_{w} \cdot t + Arg(K_{2}))\\
+\end{align*}
+
+Pero como $\alpha_{w}$ = 0, entonces: 
+\begin{align*}
+V_{o}(t) = &2 \cdot |K_{1}| \cdot e^{- \alpha_{1} \cdot t} \cdot cos(\beta_{1} \cdot t + Arg(K_{1})) \\
+&+  2 \cdot |K_{2}| \cdot e^{- \alpha_{2} \cdot t} \cdot cos(\beta_{2} \cdot t + Arg(K_{2}))\\
+&+  2 \cdot |K_{3}| \cdot cos(\beta_{w} \cdot t + Arg(K_{2}))\\[10pt]
+\end{align*}
+
+\end{itemize}
+
+\newpage
+Finalmente se dejan los respectivos graficos de cada respuesta calculada analitacamente utilizando 10000 puntos graficando en python.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{impulso_python.png}
+\caption{Respuesta al impulso analiticamente.}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{escalon_python.png}
+\caption{Respuesta al escalon analiticamente.}
+\end{figure}
+\newpage
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{senoidal_python.png}
+\caption{Respuesta a la senoidal (f=4200Hz) analiticamente.}
+\end{figure}
 
 %------------------------------------------------
 
